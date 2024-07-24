@@ -53,13 +53,11 @@ import net.lingala.zip4j.util.InternalZipConstants;
 import net.lingala.zip4j.util.RawIO;
 import net.lingala.zip4j.util.Zip4jUtil;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +83,7 @@ import static net.lingala.zip4j.util.Zip4jUtil.isStringNotNullAndNotEmpty;
  * </ul>
  */
 
-public class ZipFile implements Closeable {
+public class ZipFile {
 
   private File zipFile;
   private ZipModel zipModel;
@@ -98,7 +96,6 @@ public class ZipFile implements Closeable {
   private ThreadFactory threadFactory;
   private ExecutorService executorService;
   private int bufferSize = InternalZipConstants.BUFF_SIZE;
-  private List<InputStream> openInputStreams = new ArrayList<>();
   private boolean useUtf8CharsetForPasswords = InternalZipConstants.USE_UTF8_FOR_PASSWORD_ENCODING_DECODING;
 
   /**
@@ -1044,9 +1041,7 @@ public class ZipFile implements Closeable {
       throw new ZipException("zip model is null, cannot get inputstream");
     }
 
-    ZipInputStream zipInputStream = createZipInputStream(zipModel, fileHeader, password);
-    openInputStreams.add(zipInputStream);
-    return zipInputStream;
+    return createZipInputStream(zipModel, fileHeader, password);
   }
 
   /**
@@ -1092,19 +1087,6 @@ public class ZipFile implements Closeable {
   public List<File> getSplitZipFiles() throws ZipException {
     readZipInfo();
     return FileUtils.getSplitZipFiles(zipModel);
-  }
-
-  /**
-   * Closes any open streams that were open by an instance of this class.
-   *
-   * @throws IOException when the underlying input stream throws an exception when trying to close it
-   */
-  @Override
-  public void close() throws IOException {
-    for (InputStream inputStream : openInputStreams) {
-      inputStream.close();
-    }
-    openInputStreams.clear();
   }
 
   /**
