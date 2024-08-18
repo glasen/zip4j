@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 import static net.lingala.zip4j.util.Zip4jUtil.readFully;
 
-abstract class CipherInputStream<T extends Decrypter> extends InputStream {
+public abstract class CipherInputStream<T extends Decrypter> extends InputStream {
 
   private final ZipEntryInputStream zipEntryInputStream;
   private final T decrypter;
@@ -66,8 +66,8 @@ abstract class CipherInputStream<T extends Decrypter> extends InputStream {
     return lastReadRawDataCache;
   }
 
-  protected int readRaw(byte[] b) throws IOException {
-    return zipEntryInputStream.readRawFully(b);
+  protected void readRaw(byte[] b) throws IOException {
+    zipEntryInputStream.readRawFully(b);
   }
 
   private void cacheRawData(byte[] b, int len) {
@@ -82,10 +82,6 @@ abstract class CipherInputStream<T extends Decrypter> extends InputStream {
 
   protected void endOfEntryReached(InputStream inputStream, int numberOfBytesPushedBack) throws IOException {
     // is optional but useful for AES
-  }
-
-  protected long getNumberOfBytesReadForThisEntry() {
-    return zipEntryInputStream.getNumberOfBytesRead();
   }
 
   public LocalFileHeader getLocalFileHeader() {

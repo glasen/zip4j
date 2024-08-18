@@ -15,7 +15,6 @@ import static net.lingala.zip4j.util.Zip4jUtil.readFully;
 
 class AesCipherInputStream extends CipherInputStream<AESDecrypter> {
 
-  private final byte[] singleByteBuffer = new byte[1];
   private final byte[] aes16ByteBlock = new byte[16];
   private int aes16ByteBlockPointer = 0;
   private int remainingAes16ByteBlockLength = 0;
@@ -33,22 +32,6 @@ class AesCipherInputStream extends CipherInputStream<AESDecrypter> {
                                              boolean useUtf8ForPassword) throws IOException {
     return new AESDecrypter(localFileHeader.getAesExtraDataRecord(), password, getSalt(localFileHeader),
             getPasswordVerifier(), useUtf8ForPassword);
-  }
-
-  @Override
-  public int read() throws IOException {
-    int readLen = read(singleByteBuffer);
-
-    if (readLen == -1) {
-      return -1;
-    }
-
-    return singleByteBuffer[0] & 0xFF;
-  }
-
-  @Override
-  public int read(byte[] b) throws IOException {
-    return read(b, 0, b.length);
   }
 
   @Override
