@@ -37,8 +37,8 @@ public class AESDecrypter implements Decrypter {
   private MacBasedPRF mac;
 
   private int nonce = 1;
-  private byte[] iv;
-  private byte[] counterBlock;
+  private final byte[] iv;
+  private final byte[] counterBlock;
 
   public AESDecrypter(AESExtraDataRecord aesExtraDataRecord, char[] password, byte[] salt,
                       byte[] passwordVerifier, boolean useUtf8ForPassword) throws ZipException {
@@ -50,7 +50,7 @@ public class AESDecrypter implements Decrypter {
   private void init(byte[] salt, byte[] passwordVerifier, char[] password,
                     AESExtraDataRecord aesExtraDataRecord, boolean useUtf8ForPassword) throws ZipException {
 
-    if (password == null || password.length <= 0) {
+    if (password == null || password.length == 0) {
       throw new ZipException("empty or null password provided for AES decryption", WRONG_PASSWORD);
     }
 

@@ -28,18 +28,18 @@ import static net.lingala.zip4j.util.InternalZipConstants.USE_UTF8_FOR_PASSWORD_
 
 public class ZipOutputStream extends OutputStream {
 
-  private CountingOutputStream countingOutputStream;
-  private char[] password;
-  private ZipModel zipModel;
+  private final CountingOutputStream countingOutputStream;
+  private final char[] password;
+  private final ZipModel zipModel;
   private CompressedOutputStream compressedOutputStream;
   private FileHeader fileHeader;
   private LocalFileHeader localFileHeader;
-  private FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
-  private HeaderWriter headerWriter = new HeaderWriter();
-  private CRC32 crc32 = new CRC32();
-  private RawIO rawIO = new RawIO();
+  private final FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
+  private final HeaderWriter headerWriter = new HeaderWriter();
+  private final CRC32 crc32 = new CRC32();
+  private final RawIO rawIO = new RawIO();
   private long uncompressedSizeForThisEntry = 0;
-  private Zip4jConfig zip4jConfig;
+  private final Zip4jConfig zip4jConfig;
   private boolean streamClosed;
   private boolean entryClosed = true;
 
@@ -64,7 +64,7 @@ public class ZipOutputStream extends OutputStream {
 
   public ZipOutputStream(OutputStream outputStream, char[] password, Zip4jConfig zip4jConfig,
                          ZipModel zipModel) throws IOException {
-    if (zip4jConfig.getBufferSize() < InternalZipConstants.MIN_BUFF_SIZE) {
+    if (zip4jConfig.bufferSize() < InternalZipConstants.MIN_BUFF_SIZE) {
       throw new IllegalArgumentException("Buffer size cannot be less than " + MIN_BUFF_SIZE + " bytes");
     }
 
@@ -136,7 +136,7 @@ public class ZipOutputStream extends OutputStream {
     }
 
     zipModel.getEndOfCentralDirectoryRecord().setOffsetOfStartOfCentralDirectory(countingOutputStream.getNumberOfBytesWritten());
-    headerWriter.finalizeZipFile(zipModel, countingOutputStream, zip4jConfig.getCharset());
+    headerWriter.finalizeZipFile(zipModel, countingOutputStream, zip4jConfig.charset());
     countingOutputStream.close();
     this.streamClosed = true;
   }
@@ -167,11 +167,11 @@ public class ZipOutputStream extends OutputStream {
 
   private void initializeAndWriteFileHeader(ZipParameters zipParameters) throws IOException {
     fileHeader = fileHeaderFactory.generateFileHeader(zipParameters, countingOutputStream.isSplitZipFile(),
-        countingOutputStream.getCurrentSplitFileCounter(), zip4jConfig.getCharset(), rawIO);
+        countingOutputStream.getCurrentSplitFileCounter(), zip4jConfig.charset(), rawIO);
     fileHeader.setOffsetLocalHeader(countingOutputStream.getOffsetForNextEntry());
 
     localFileHeader = fileHeaderFactory.generateLocalFileHeader(fileHeader);
-    headerWriter.writeLocalFileHeader(zipModel, localFileHeader, countingOutputStream, zip4jConfig.getCharset());
+    headerWriter.writeLocalFileHeader(zipModel, localFileHeader, countingOutputStream, zip4jConfig.charset());
   }
 
   private void reset() throws IOException {
@@ -205,9 +205,9 @@ public class ZipOutputStream extends OutputStream {
     }
 
     if (zipParameters.getEncryptionMethod() == EncryptionMethod.AES) {
-      return new AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4jConfig.isUseUtf8CharsetForPasswords());
+      return new AesCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4jConfig.useUtf8CharsetForPasswords());
     } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD) {
-      return new ZipStandardCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4jConfig.isUseUtf8CharsetForPasswords());
+      return new ZipStandardCipherOutputStream(zipEntryOutputStream, zipParameters, password, zip4jConfig.useUtf8CharsetForPasswords());
     } else if (zipParameters.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG) {
       throw new ZipException(EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG + " encryption method is not supported");
     } else {
@@ -218,7 +218,7 @@ public class ZipOutputStream extends OutputStream {
   private CompressedOutputStream initializeCompressedOutputStream(CipherOutputStream<?> cipherOutputStream,
                                                                   ZipParameters zipParameters) {
     if (zipParameters.getCompressionMethod() == CompressionMethod.DEFLATE) {
-      return new DeflaterOutputStream(cipherOutputStream, zipParameters.getCompressionLevel(), zip4jConfig.getBufferSize());
+      return new DeflaterOutputStream(cipherOutputStream, zipParameters.getCompressionLevel(), zip4jConfig.bufferSize());
     }
 
     return new StoreOutputStream(cipherOutputStream);

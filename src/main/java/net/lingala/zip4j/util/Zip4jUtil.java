@@ -33,11 +33,11 @@ public class Zip4jUtil {
   private static final int MAX_RAW_READ_FULLY_RETRY_ATTEMPTS = 15;
 
   public static boolean isStringNullOrEmpty(String str) {
-    return str == null || str.trim().length() == 0;
+    return str == null || str.trim().isEmpty();
   }
 
   public static boolean isStringNotNullAndNotEmpty(String str) {
-    return str != null && str.trim().length() > 0;
+    return str != null && !str.trim().isEmpty();
   }
 
   public static boolean createDirectoryIfNotExists(File file) throws ZipException {
@@ -77,7 +77,7 @@ public class Zip4jUtil {
     if (year < 1980) {
       return DOSTIME_BEFORE_1980;
     }
-    return (year - 1980) << 25 | (cal.get(Calendar.MONTH) + 1) << 21 |
+    return (long) (year - 1980) << 25 | (cal.get(Calendar.MONTH) + 1) << 21 |
             cal.get(Calendar.DATE) << 16 | cal.get(Calendar.HOUR_OF_DAY) << 11 | cal.get(Calendar.MINUTE) << 5 |
             cal.get(Calendar.SECOND) >> 1;
   }

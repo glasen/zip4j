@@ -43,9 +43,9 @@ public class ZipParameters {
      * Add the symbolic link itself and the target file with its original filename and its contents
      */
     INCLUDE_LINK_AND_LINKED_FILE
-  };
+  }
 
-  private CompressionMethod compressionMethod = CompressionMethod.DEFLATE;
+    private CompressionMethod compressionMethod = CompressionMethod.DEFLATE;
   private CompressionLevel compressionLevel = CompressionLevel.NORMAL;
   private boolean encryptFiles = false;
   private EncryptionMethod encryptionMethod = EncryptionMethod.NONE;

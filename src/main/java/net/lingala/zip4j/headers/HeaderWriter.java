@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
 import java.util.List;
 
 import static net.lingala.zip4j.headers.HeaderUtil.getBytesFromString;
@@ -265,7 +266,7 @@ public class HeaderWriter {
       String fileNameWithoutExt = getZipFileNameWithoutExtension(zipModel.getZipFile().getName());
       String fileName = "";
       if (parentFile != null) {
-        fileName = parentFile + System.getProperty("file.separator");
+        fileName = parentFile + FileSystems.getDefault().getSeparator();
       }
       if (fileHeader.getDiskNumberStart() < 9) {
         fileName += fileNameWithoutExt + ".z0" + (fileHeader.getDiskNumberStart() + 1);
@@ -387,7 +388,7 @@ public class HeaderWriter {
                                      Charset charset) throws ZipException {
 
     if (zipModel.getCentralDirectory() == null || zipModel.getCentralDirectory().getFileHeaders() == null
-        || zipModel.getCentralDirectory().getFileHeaders().size() <= 0) {
+        || zipModel.getCentralDirectory().getFileHeaders().isEmpty()) {
       return;
     }
 
@@ -542,7 +543,7 @@ public class HeaderWriter {
 
   private void writeRemainingExtraDataRecordsIfPresent(FileHeader fileHeader, OutputStream outputStream)
       throws IOException {
-    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().size() == 0) {
+    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().isEmpty()) {
       return;
     }
 
@@ -677,7 +678,7 @@ public class HeaderWriter {
 
     if (zipModel.getCentralDirectory() != null &&
         zipModel.getCentralDirectory().getFileHeaders() != null &&
-        zipModel.getCentralDirectory().getFileHeaders().size() > 0) {
+            !zipModel.getCentralDirectory().getFileHeaders().isEmpty()) {
       FileHeader firstFileHeader = zipModel.getCentralDirectory().getFileHeaders().get(0);
       zip64EndOfCentralDirectoryRecord.setVersionMadeBy(firstFileHeader.getVersionMadeBy());
       zip64EndOfCentralDirectoryRecord.setVersionNeededToExtract(firstFileHeader.getVersionNeededToExtract());

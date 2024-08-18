@@ -10,8 +10,8 @@ import java.util.zip.Inflater;
 public class InflaterInputStream extends DecompressedInputStream {
 
   private Inflater inflater;
-  private byte[] buff;
-  private byte[] singleByteBuffer = new byte[1];
+  private final byte[] buff;
+  private final byte[] singleByteBuffer = new byte[1];
   private int len;
 
   public InflaterInputStream(CipherInputStream<?> cipherInputStream, int bufferSize) {
@@ -28,7 +28,7 @@ public class InflaterInputStream extends DecompressedInputStream {
       return -1;
     }
 
-    return singleByteBuffer[0];
+    return singleByteBuffer[0] & 0xFF;
   }
 
   @Override

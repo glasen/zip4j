@@ -65,12 +65,12 @@ public class RemoveFilesFromZipTask extends AbstractModifyFileTask<RemoveFilesFr
         } else {
           // copy complete entry without any changes
           currentFileCopyPointer += super.copyFile(inputStream, outputStream, currentFileCopyPointer,
-              lengthOfCurrentEntry, progressMonitor, taskParameters.zip4jConfig.getBufferSize());
+              lengthOfCurrentEntry, progressMonitor, taskParameters.zip4jConfig.bufferSize());
         }
         verifyIfTaskIsCancelled();
       }
 
-      headerWriter.finalizeZipFile(zipModel, outputStream, taskParameters.zip4jConfig.getCharset());
+      headerWriter.finalizeZipFile(zipModel, outputStream, taskParameters.zip4jConfig.charset());
       successFlag = true;
     } finally {
       cleanupFile(successFlag, zipModel.getZipFile(), temporaryZipFile);

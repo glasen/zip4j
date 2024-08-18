@@ -54,11 +54,6 @@ public class AddFilesToZipTask extends AbstractAddFileToZipTask<AddFilesToZipTas
     return filesToAdd;
   }
 
-  @Override
-  protected ProgressMonitor.Task getTask() {
-    return super.getTask();
-  }
-
   public static class AddFilesToZipTaskParameters extends AbstractZipTaskParameters {
     private final List<File> filesToAdd;
     private final ZipParameters zipParameters;

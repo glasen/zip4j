@@ -6,8 +6,8 @@ import java.io.PushbackInputStream;
 
 abstract class DecompressedInputStream extends InputStream {
 
-  private CipherInputStream<?> cipherInputStream;
-  protected byte[] oneByteBuffer = new byte[1];
+  private final CipherInputStream<?> cipherInputStream;
+  protected final byte[] oneByteBuffer = new byte[1];
 
   public DecompressedInputStream(CipherInputStream<?> cipherInputStream) {
     this.cipherInputStream = cipherInputStream;
@@ -21,7 +21,7 @@ abstract class DecompressedInputStream extends InputStream {
       return -1;
     }
 
-    return oneByteBuffer[0];
+    return oneByteBuffer[0] & 0xFF;
   }
 
   @Override

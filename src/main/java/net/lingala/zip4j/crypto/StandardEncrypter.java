@@ -33,7 +33,7 @@ public class StandardEncrypter implements Encrypter {
   }
 
   private void init(char[] password, long key, boolean useUtf8ForPassword) throws ZipException {
-    if (password == null || password.length <= 0) {
+    if (password == null || password.length == 0) {
       throw new ZipException("input password is null or empty, cannot initialize standard encrypter");
     }
     zipCryptoEngine.initKeys(password, useUtf8ForPassword);

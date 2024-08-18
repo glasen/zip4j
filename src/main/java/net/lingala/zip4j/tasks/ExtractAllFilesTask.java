@@ -37,7 +37,7 @@ public class ExtractAllFilesTask extends AbstractExtractFileTask<ExtractAllFiles
 
         splitInputStream.prepareExtractionForFileHeader(fileHeader);
 
-        byte[] readBuff = new byte[taskParameters.zip4jConfig.getBufferSize()];
+        byte[] readBuff = new byte[taskParameters.zip4jConfig.bufferSize()];
         extractFile(zipInputStream, fileHeader, taskParameters.outputPath, null, progressMonitor, readBuff);
         verifyIfTaskIsCancelled();
       }
@@ -67,7 +67,7 @@ public class ExtractAllFilesTask extends AbstractExtractFileTask<ExtractAllFiles
   private FileHeader getFirstFileHeader(ZipModel zipModel) {
     if (zipModel.getCentralDirectory() == null
         || zipModel.getCentralDirectory().getFileHeaders() == null
-        || zipModel.getCentralDirectory().getFileHeaders().size() == 0) {
+        || zipModel.getCentralDirectory().getFileHeaders().isEmpty()) {
       return null;
     }
 

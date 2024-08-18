@@ -85,13 +85,13 @@ import static net.lingala.zip4j.util.Zip4jUtil.isStringNotNullAndNotEmpty;
 
 public class ZipFile {
 
-  private File zipFile;
+  private final File zipFile;
   private ZipModel zipModel;
   private boolean isEncrypted;
-  private ProgressMonitor progressMonitor;
+  private final ProgressMonitor progressMonitor;
   private boolean runInThread;
   private char[] password;
-  private HeaderWriter headerWriter = new HeaderWriter();
+  private final HeaderWriter headerWriter = new HeaderWriter();
   private Charset charset = null;
   private ThreadFactory threadFactory;
   private ExecutorService executorService;
@@ -171,7 +171,7 @@ public class ZipFile {
           + " already exists. To add files to existing zip file use addFile method");
     }
 
-    if (filesToAdd == null || filesToAdd.size() == 0) {
+    if (filesToAdd == null || filesToAdd.isEmpty()) {
       throw new ZipException("input file List is null, cannot create zip file");
     }
 
@@ -325,7 +325,7 @@ public class ZipFile {
    */
   public void addFiles(List<File> filesToAdd, ZipParameters parameters) throws ZipException {
 
-    if (filesToAdd == null || filesToAdd.size() == 0) {
+    if (filesToAdd == null || filesToAdd.isEmpty()) {
       throw new ZipException("input file List is null or empty");
     }
 
@@ -927,7 +927,7 @@ public class ZipFile {
       throw new ZipException("fileNamesMap is null");
     }
 
-    if (fileNamesMap.size() == 0) {
+    if (fileNamesMap.isEmpty()) {
       return;
     }
 
@@ -1065,11 +1065,7 @@ public class ZipFile {
     try {
       readZipInfo();
 
-      if (zipModel.isSplitArchive() && !verifyAllSplitFilesOfZipExists(getSplitZipFiles())) {
-        return false;
-      }
-
-      return true;
+        return !zipModel.isSplitArchive() || verifyAllSplitFilesOfZipExists(getSplitZipFiles());
     } catch (Exception e) {
       return false;
     }

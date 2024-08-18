@@ -5,7 +5,7 @@ public enum RandomAccessFileMode {
   READ("r"),
   WRITE("rw");
 
-  private String value;
+  private final String value;
 
   RandomAccessFileMode(String value) {
     this.value = value;

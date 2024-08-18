@@ -53,7 +53,7 @@ public class AddStreamToZipTask extends AbstractAddFileToZipTask<AddStreamToZipT
     try(SplitOutputStream splitOutputStream = new SplitOutputStream(getZipModel().getZipFile(), getZipModel().getSplitLength());
         ZipOutputStream zipOutputStream = initializeOutputStream(splitOutputStream, taskParameters.zip4jConfig)) {
 
-      byte[] readBuff = new byte[taskParameters.zip4jConfig.getBufferSize()];
+      byte[] readBuff = new byte[taskParameters.zip4jConfig.bufferSize()];
       int readLen;
 
       ZipParameters zipParameters = taskParameters.zipParameters;

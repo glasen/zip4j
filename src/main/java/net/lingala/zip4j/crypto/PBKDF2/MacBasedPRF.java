@@ -32,10 +32,10 @@ import static net.lingala.zip4j.util.InternalZipConstants.AES_BLOCK_SIZE;
  */
 
 public class MacBasedPRF implements PRF {
-  private Mac mac;
-  private int hLen;
-  private String macAlgorithm;
-  private ByteArrayOutputStream macCache;
+  private final Mac mac;
+  private final int hLen;
+  private final String macAlgorithm;
+  private final ByteArrayOutputStream macCache;
 
   public MacBasedPRF(String macAlgorithm) {
     this.macAlgorithm = macAlgorithm;

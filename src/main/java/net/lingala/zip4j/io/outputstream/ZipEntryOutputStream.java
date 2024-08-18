@@ -6,7 +6,7 @@ import java.io.OutputStream;
 class ZipEntryOutputStream extends OutputStream {
 
   private long numberOfBytesWrittenForThisEntry = 0;
-  private OutputStream outputStream;
+  private final OutputStream outputStream;
   private boolean entryClosed;
 
   public ZipEntryOutputStream(OutputStream outputStream) {
@@ -34,7 +34,7 @@ class ZipEntryOutputStream extends OutputStream {
     numberOfBytesWrittenForThisEntry += len;
   }
 
-  public void closeEntry() throws IOException {
+  public void closeEntry() {
     entryClosed = true;
   }
 
@@ -43,7 +43,7 @@ class ZipEntryOutputStream extends OutputStream {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     // Do nothing
     // Do not close the outputstream yet. This will be closed by countingOutputStream
   }

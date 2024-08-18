@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.FileSystems;
 
 import static net.lingala.zip4j.util.FileUtils.getZipFileNameWithoutExtension;
 import static net.lingala.zip4j.util.InternalZipConstants.MIN_SPLIT_LENGTH;
@@ -33,11 +34,11 @@ import static net.lingala.zip4j.util.InternalZipConstants.MIN_SPLIT_LENGTH;
 public class SplitOutputStream extends OutputStream implements OutputStreamWithSplitZipSupport {
 
   private RandomAccessFile raf;
-  private long splitLength;
+  private final long splitLength;
   private File zipFile;
   private int currSplitFileCounter;
   private long bytesWrittenForThisPart;
-  private  RawIO rawIO = new RawIO();
+  private final RawIO rawIO = new RawIO();
 
   public SplitOutputStream(File file) throws FileNotFoundException, ZipException {
     this(file, -1);
@@ -100,7 +101,7 @@ public class SplitOutputStream extends OutputStream implements OutputStreamWithS
     String zipFileWithoutExt = getZipFileNameWithoutExtension(zipFile.getName());
     String zipFileName = zipFile.getAbsolutePath();
     String parentPath = (zipFile.getParent() == null) ? "" : zipFile.getParent()
-        + System.getProperty("file.separator");
+        + FileSystems.getDefault().getSeparator();
 
     String fileExtension = ".z0" + (currSplitFileCounter + 1);
     if (currSplitFileCounter >= 9) {

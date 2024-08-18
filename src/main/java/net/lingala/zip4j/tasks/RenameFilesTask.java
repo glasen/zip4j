@@ -38,7 +38,7 @@ public class RenameFilesTask extends AbstractModifyFileTask<RenameFilesTask.Rena
   @Override
   protected void executeTask(RenameFilesTaskParameters taskParameters, ProgressMonitor progressMonitor) throws IOException {
     Map<String, String> fileNamesMap = filterNonExistingEntriesAndAddSeparatorIfNeeded(taskParameters.fileNamesMap);
-    if (fileNamesMap.size() == 0) {
+    if (fileNamesMap.isEmpty()) {
       return;
     }
 
@@ -48,7 +48,7 @@ public class RenameFilesTask extends AbstractModifyFileTask<RenameFilesTask.Rena
         SplitOutputStream outputStream = new SplitOutputStream(temporaryFile)) {
 
       long currentFileCopyPointer = 0;
-      Charset charset = taskParameters.zip4jConfig.getCharset();
+      Charset charset = taskParameters.zip4jConfig.charset();
 
       // Maintain a different list to iterate, so that when the file name is changed in the central directory
       // we still have access to the original file names. If iterating on the original list from central directory,
@@ -65,14 +65,14 @@ public class RenameFilesTask extends AbstractModifyFileTask<RenameFilesTask.Rena
         if (fileNameMapForThisEntry == null) {
           // copy complete entry without any changes
           currentFileCopyPointer += copyFile(inputStream, outputStream, currentFileCopyPointer, lengthToCopy,
-              progressMonitor, taskParameters.zip4jConfig.getBufferSize());
+              progressMonitor, taskParameters.zip4jConfig.bufferSize());
         } else {
           String newFileName = getNewFileName(fileNameMapForThisEntry.getValue(), fileNameMapForThisEntry.getKey(), fileHeader.getFileName());
           byte[] newFileNameBytes = HeaderUtil.getBytesFromString(newFileName, charset);
           int headersOffset = newFileNameBytes.length - fileHeader.getFileNameLength();
 
           currentFileCopyPointer = copyEntryAndChangeFileName(newFileNameBytes, fileHeader, currentFileCopyPointer, lengthToCopy,
-              inputStream, outputStream, progressMonitor, taskParameters.zip4jConfig.getBufferSize());
+              inputStream, outputStream, progressMonitor, taskParameters.zip4jConfig.bufferSize());
 
           updateHeadersInZipModel(sortedFileHeaders, fileHeader, newFileName, newFileNameBytes, headersOffset);
         }

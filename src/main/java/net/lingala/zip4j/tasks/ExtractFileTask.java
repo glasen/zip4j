@@ -25,7 +25,7 @@ import static net.lingala.zip4j.headers.HeaderUtil.getTotalUncompressedSizeOfAll
 
 public class ExtractFileTask extends AbstractExtractFileTask<ExtractFileTaskParameters> {
 
-  private char[] password;
+  private final char[] password;
   private SplitFileInputStream splitInputStream;
 
   public ExtractFileTask(ZipModel zipModel, char[] password, UnzipParameters unzipParameters,
@@ -40,7 +40,7 @@ public class ExtractFileTask extends AbstractExtractFileTask<ExtractFileTaskPara
 
     List<FileHeader> fileHeadersUnderDirectory = getFileHeadersToExtract(taskParameters.fileToExtract);
     try(ZipInputStream zipInputStream = createZipInputStream(taskParameters.zip4jConfig)) {
-      byte[] readBuff = new byte[taskParameters.zip4jConfig.getBufferSize()];
+      byte[] readBuff = new byte[taskParameters.zip4jConfig.bufferSize()];
       for (FileHeader fileHeader : fileHeadersUnderDirectory) {
         splitInputStream.prepareExtractionForFileHeader(fileHeader);
         String newFileName = determineNewFileName(taskParameters.newFileName, taskParameters.fileToExtract, fileHeader);
@@ -95,9 +95,9 @@ public class ExtractFileTask extends AbstractExtractFileTask<ExtractFileTaskPara
   }
 
   public static class ExtractFileTaskParameters extends AbstractZipTaskParameters {
-    private String outputPath;
-    private String fileToExtract;
-    private String newFileName;
+    private final String outputPath;
+    private final String fileToExtract;
+    private final String newFileName;
 
     public ExtractFileTaskParameters(String outputPath, String fileToExtract, String newFileName,
                                      Zip4jConfig zip4jConfig) {

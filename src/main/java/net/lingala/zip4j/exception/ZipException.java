@@ -17,9 +17,11 @@
 package net.lingala.zip4j.exception;
 
 import java.io.IOException;
+import java.io.Serial;
 
 public class ZipException extends IOException {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   private Type type = Type.UNKNOWN;

@@ -82,7 +82,6 @@ public class HeaderReader {
     } catch (ZipException e) {
       throw e;
     } catch (IOException e) {
-      e.printStackTrace();
       throw new ZipException("Zip headers not found. Probably not a zip file or a corrupted zip file", e);
     }
 
@@ -96,15 +95,11 @@ public class HeaderReader {
 
     if (zipModel.isZip64Format()) {
       zipModel.setZip64EndOfCentralDirectoryRecord(readZip64EndCentralDirRec(zip4jRaf, rawIO));
-      if (zipModel.getZip64EndOfCentralDirectoryRecord() != null
-          && zipModel.getZip64EndOfCentralDirectoryRecord().getNumberOfThisDisk() > 0) {
-        zipModel.setSplitArchive(true);
-      } else {
-        zipModel.setSplitArchive(false);
-      }
+        zipModel.setSplitArchive(zipModel.getZip64EndOfCentralDirectoryRecord() != null
+                && zipModel.getZip64EndOfCentralDirectoryRecord().getNumberOfThisDisk() > 0);
     }
 
-    zipModel.setCentralDirectory(readCentralDirectory(zip4jRaf, rawIO, zip4jConfig.getCharset()));
+    zipModel.setCentralDirectory(readCentralDirectory(zip4jRaf, rawIO, zip4jConfig.charset()));
 
     return zipModel;
   }
@@ -129,7 +124,7 @@ public class HeaderReader {
     endOfCentralDirectoryRecord.setOffsetOfStartOfCentralDirectory(rawIO.readLongLittleEndian(intBuff, 0));
 
     int commentLength = rawIO.readShortLittleEndian(zip4jRaf);
-    endOfCentralDirectoryRecord.setComment(readZipComment(zip4jRaf, commentLength, zip4jConfig.getCharset()));
+    endOfCentralDirectoryRecord.setComment(readZipComment(zip4jRaf, commentLength, zip4jConfig.charset()));
 
     zipModel.setSplitArchive(endOfCentralDirectoryRecord.getNumberOfThisDisk() > 0);
     return endOfCentralDirectoryRecord;
@@ -326,7 +321,7 @@ public class HeaderReader {
       counter += sizeOfRec;
       extraDataRecords.add(extraDataRecord);
     }
-    return extraDataRecords.size() > 0 ? extraDataRecords : null;
+    return !extraDataRecords.isEmpty() ? extraDataRecords : null;
   }
 
   private Zip64EndOfCentralDirectoryLocator readZip64EndOfCentralDirectoryLocator(RandomAccessFile zip4jRaf,
@@ -402,7 +397,7 @@ public class HeaderReader {
   }
 
   private void readZip64ExtendedInfo(FileHeader fileHeader, RawIO rawIO)  {
-    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().size() <= 0) {
+    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().isEmpty()) {
       return;
     }
 
@@ -438,7 +433,7 @@ public class HeaderReader {
       throw new ZipException("file header is null in reading Zip64 Extended Info");
     }
 
-    if (localFileHeader.getExtraDataRecords() == null || localFileHeader.getExtraDataRecords().size() <= 0) {
+    if (localFileHeader.getExtraDataRecords() == null || localFileHeader.getExtraDataRecords().isEmpty()) {
       return;
     }
 
@@ -618,7 +613,7 @@ public class HeaderReader {
   }
 
   private void readAesExtraDataRecord(AbstractFileHeader fileHeader, RawIO rawIO) throws ZipException {
-    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().size() <= 0) {
+    if (fileHeader.getExtraDataRecords() == null || fileHeader.getExtraDataRecords().isEmpty()) {
       return;
     }
 
@@ -702,9 +697,9 @@ public class HeaderReader {
         return currentFilePointer;
       }
       numberOfBytesToRead--;
-    };
+    }
 
-    throw new ZipException("Zip headers not found. Probably not a zip file");
+      throw new ZipException("Zip headers not found. Probably not a zip file");
   }
 
   private void seekInCurrentPart(RandomAccessFile randomAccessFile, long pos) throws IOException {

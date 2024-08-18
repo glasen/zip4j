@@ -45,16 +45,16 @@ import static net.lingala.zip4j.util.Zip4jUtil.getCompressionMethod;
 
 public class ZipInputStream extends InputStream {
 
-  private PushbackInputStream inputStream;
+  private final PushbackInputStream inputStream;
   private DecompressedInputStream decompressedInputStream;
-  private HeaderReader headerReader = new HeaderReader();
+  private final HeaderReader headerReader = new HeaderReader();
   private char[] password;
-  private PasswordCallback passwordCallback;
+  private final PasswordCallback passwordCallback;
   private LocalFileHeader localFileHeader;
-  private CRC32 crc32 = new CRC32();
+  private final CRC32 crc32 = new CRC32();
   private byte[] endOfEntryBuffer;
   private boolean canSkipExtendedLocalFileHeader = false;
-  private Zip4jConfig zip4jConfig;
+  private final Zip4jConfig zip4jConfig;
   private boolean streamClosed = false;
   private boolean entryEOFReached = false;
 
@@ -91,11 +91,11 @@ public class ZipInputStream extends InputStream {
   }
 
   private ZipInputStream(InputStream inputStream, char[] password, PasswordCallback passwordCallback, Zip4jConfig zip4jConfig) {
-    if (zip4jConfig.getBufferSize() < InternalZipConstants.MIN_BUFF_SIZE) {
+    if (zip4jConfig.bufferSize() < InternalZipConstants.MIN_BUFF_SIZE) {
       throw new IllegalArgumentException("Buffer size cannot be less than " + MIN_BUFF_SIZE + " bytes");
     }
 
-    this.inputStream = new PushbackInputStream(inputStream, zip4jConfig.getBufferSize());
+    this.inputStream = new PushbackInputStream(inputStream, zip4jConfig.bufferSize());
     this.password = password;
     this.passwordCallback = passwordCallback;
     this.zip4jConfig = zip4jConfig;
@@ -112,7 +112,7 @@ public class ZipInputStream extends InputStream {
       readUntilEndOfEntry();
     }
 
-    localFileHeader = headerReader.readLocalFileHeader(inputStream, zip4jConfig.getCharset());
+    localFileHeader = headerReader.readLocalFileHeader(inputStream, zip4jConfig.charset());
 
     if (localFileHeader == null) {
       return null;
@@ -251,15 +251,15 @@ public class ZipInputStream extends InputStream {
   private CipherInputStream<?> initializeCipherInputStream(ZipEntryInputStream zipEntryInputStream,
                                                         LocalFileHeader localFileHeader) throws IOException {
     if (!localFileHeader.isEncrypted()) {
-      return new NoCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.getBufferSize());
+      return new NoCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.bufferSize());
     }
 
     if (localFileHeader.getEncryptionMethod() == EncryptionMethod.AES) {
-      return new AesCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.getBufferSize(),
-              zip4jConfig.isUseUtf8CharsetForPasswords());
+      return new AesCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.bufferSize(),
+              zip4jConfig.useUtf8CharsetForPasswords());
     } else if (localFileHeader.getEncryptionMethod() == EncryptionMethod.ZIP_STANDARD) {
-      return new ZipStandardCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.getBufferSize(),
-              zip4jConfig.isUseUtf8CharsetForPasswords());
+      return new ZipStandardCipherInputStream(zipEntryInputStream, localFileHeader, password, zip4jConfig.bufferSize(),
+              zip4jConfig.useUtf8CharsetForPasswords());
     } else {
       final String message = String.format("Entry [%s] Strong Encryption not supported", localFileHeader.getFileName());
       throw new ZipException(message, ZipException.Type.UNSUPPORTED_ENCRYPTION);
@@ -271,7 +271,7 @@ public class ZipInputStream extends InputStream {
     CompressionMethod compressionMethod = getCompressionMethod(localFileHeader);
 
     if (compressionMethod == CompressionMethod.DEFLATE) {
-      return new InflaterInputStream(cipherInputStream, zip4jConfig.getBufferSize());
+      return new InflaterInputStream(cipherInputStream, zip4jConfig.bufferSize());
     }
 
     return new StoreInputStream(cipherInputStream);

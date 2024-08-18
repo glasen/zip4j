@@ -38,7 +38,7 @@ public class PBKDF2Engine {
   }
 
   public byte[] deriveKey(char[] inputPassword, int dkLen, boolean useUtf8ForPassword) {
-    byte p[];
+    byte[] p;
     if (inputPassword == null) {
       throw new NullPointerException();
     }
@@ -66,7 +66,7 @@ public class PBKDF2Engine {
     int hLen = prf.getHLen();
     int l = ceil(dkLen, hLen);
     int r = dkLen - (l - 1) * hLen;
-    byte T[] = new byte[l * hLen];
+    byte[] T = new byte[l * hLen];
     int ti_offset = 0;
     for (int i = 1; i <= l; i++) {
       _F(T, ti_offset, prf, S, c, i);
@@ -74,7 +74,7 @@ public class PBKDF2Engine {
     }
     if (r < hLen) {
       // Incomplete last block
-      byte DK[] = new byte[dkLen];
+      byte[] DK = new byte[dkLen];
       System.arraycopy(T, 0, DK, 0, dkLen);
       return DK;
     }
@@ -92,10 +92,10 @@ public class PBKDF2Engine {
   private void _F(byte[] dest, int offset, PRF prf, byte[] S, int c,
                   int blockIndex) {
     int hLen = prf.getHLen();
-    byte U_r[] = new byte[hLen];
+    byte[] U_r = new byte[hLen];
 
     // U0 = S || INT (i);
-    byte U_i[] = new byte[S.length + 4];
+    byte[] U_i = new byte[S.length + 4];
     System.arraycopy(S, 0, U_i, 0, S.length);
     INT(U_i, S.length, blockIndex);
 

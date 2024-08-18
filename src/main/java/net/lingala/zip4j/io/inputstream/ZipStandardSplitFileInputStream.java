@@ -15,10 +15,10 @@ public class ZipStandardSplitFileInputStream extends SplitFileInputStream {
 
   protected RandomAccessFile randomAccessFile;
   protected File zipFile;
-  private int lastSplitZipFileNumber;
-  private boolean isSplitZipArchive;
+  private final int lastSplitZipFileNumber;
+  private final boolean isSplitZipArchive;
   private int currentSplitFileCounter = 0;
-  private byte[] singleByteArray = new byte[1];
+  private final byte[] singleByteArray = new byte[1];
 
   public ZipStandardSplitFileInputStream(File zipFile, boolean isSplitZipArchive, int lastSplitZipFileNumber) throws FileNotFoundException {
     this.randomAccessFile = new RandomAccessFile(zipFile, RandomAccessFileMode.READ.getValue());
@@ -38,7 +38,7 @@ public class ZipStandardSplitFileInputStream extends SplitFileInputStream {
       return -1;
     }
 
-    return singleByteArray[0];
+    return singleByteArray[0] & 0xFF;
   }
 
   @Override

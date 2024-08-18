@@ -38,7 +38,7 @@ public class SetCommentTask extends AsyncZipTask<SetCommentTaskTaskParameters> {
       }
 
       HeaderWriter headerWriter = new HeaderWriter();
-      headerWriter.finalizeZipFileWithoutValidations(zipModel, outputStream, taskParameters.zip4jConfig.getCharset());
+      headerWriter.finalizeZipFileWithoutValidations(zipModel, outputStream, taskParameters.zip4jConfig.charset());
     }
   }
 
@@ -53,7 +53,7 @@ public class SetCommentTask extends AsyncZipTask<SetCommentTaskTaskParameters> {
   }
 
   public static class SetCommentTaskTaskParameters extends AbstractZipTaskParameters {
-    private String comment;
+    private final String comment;
 
     public SetCommentTaskTaskParameters(String comment, Zip4jConfig zip4jConfig) {
       super(zip4jConfig);

@@ -29,16 +29,13 @@ public abstract class AsyncZipTask<T> {
       long totalWorkToBeDone = calculateTotalWork(taskParameters);
       progressMonitor.setTotalWork(totalWorkToBeDone);
 
-      executorService.execute(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            AsyncZipTask.this.performTaskWithErrorHandling(taskParameters, progressMonitor);
-          } catch (ZipException e) {
-            //Do nothing. Exception will be passed through progress monitor
-          } finally {
-            executorService.shutdown();
-          }
+      executorService.execute(() -> {
+        try {
+          AsyncZipTask.this.performTaskWithErrorHandling(taskParameters, progressMonitor);
+        } catch (ZipException e) {
+          //Do nothing. Exception will be passed through progress monitor
+        } finally {
+          executorService.shutdown();
         }
       });
     } else {

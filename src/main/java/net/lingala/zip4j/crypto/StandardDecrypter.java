@@ -24,7 +24,7 @@ import static net.lingala.zip4j.util.InternalZipConstants.STD_DEC_HDR_SIZE;
 
 public class StandardDecrypter implements Decrypter {
 
-  private ZipCryptoEngine zipCryptoEngine;
+  private final ZipCryptoEngine zipCryptoEngine;
 
   public StandardDecrypter(char[] password, long crc, long lastModifiedFileTime,
                            byte[] headerBytes, boolean useUtf8ForPassword) throws ZipException {
@@ -49,7 +49,7 @@ public class StandardDecrypter implements Decrypter {
 
   private void init(byte[] headerBytes, char[] password, long lastModifiedFileTime, long crc,
                     boolean useUtf8ForPassword) throws ZipException {
-    if (password == null || password.length <= 0) {
+    if (password == null || password.length == 0) {
       throw new ZipException("Wrong password!", ZipException.Type.WRONG_PASSWORD);
     }
 

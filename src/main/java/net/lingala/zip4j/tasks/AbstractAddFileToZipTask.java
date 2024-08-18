@@ -60,7 +60,7 @@ public abstract class AbstractAddFileToZipTask<T> extends AsyncZipTask<T> {
 
     assertFilesExist(filesToAdd, zipParameters.getSymbolicLinkAction());
 
-    byte[] readBuff = new byte[zip4jConfig.getBufferSize()];
+    byte[] readBuff = new byte[zip4jConfig.bufferSize()];
     List<File> updatedFilesToAdd = removeFilesIfExists(filesToAdd, zipParameters, progressMonitor, zip4jConfig);
 
     try (SplitOutputStream splitOutputStream = new SplitOutputStream(zipModel.getZipFile(), zipModel.getSplitLength());
@@ -184,7 +184,7 @@ public abstract class AbstractAddFileToZipTask<T> extends AsyncZipTask<T> {
         throw new ZipException("Encryption method has to be set, when encrypt files flag is set");
       }
 
-      if (password == null || password.length <= 0) {
+      if (password == null || password.length == 0) {
         throw new ZipException("input password is empty or null");
       }
     } else {

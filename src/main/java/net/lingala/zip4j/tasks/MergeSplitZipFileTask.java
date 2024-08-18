@@ -69,7 +69,7 @@ public class MergeSplitZipFileTask extends AsyncZipTask<MergeSplitZipFileTaskPar
             end = zipModel.getEndOfCentralDirectoryRecord().getOffsetOfStartOfCentralDirectory();
           }
 
-          copyFile(randomAccessFile, outputStream, start, end, progressMonitor, taskParameters.zip4jConfig.getBufferSize());
+          copyFile(randomAccessFile, outputStream, start, end, progressMonitor, taskParameters.zip4jConfig.bufferSize());
           totalBytesWritten += (end - start);
           updateFileHeaderOffsetsForIndex(zipModel.getCentralDirectory().getFileHeaders(),
               i == 0 ? 0 : totalBytesWritten, i, splitSignatureOverhead);
@@ -77,7 +77,7 @@ public class MergeSplitZipFileTask extends AsyncZipTask<MergeSplitZipFileTaskPar
         }
       }
       updateHeadersForMergeSplitFileAction(zipModel, totalBytesWritten, outputStream,
-          taskParameters.zip4jConfig.getCharset());
+          taskParameters.zip4jConfig.charset());
       progressMonitor.endProgressMonitor();
     } catch (CloneNotSupportedException e) {
       throw new ZipException(e);
@@ -192,7 +192,7 @@ public class MergeSplitZipFileTask extends AsyncZipTask<MergeSplitZipFileTaskPar
   }
 
   public static class MergeSplitZipFileTaskParameters extends AbstractZipTaskParameters {
-    private File outputZipFile;
+    private final File outputZipFile;
 
     public MergeSplitZipFileTaskParameters(File outputZipFile, Zip4jConfig zip4jConfig) {
       super(zip4jConfig);

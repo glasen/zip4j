@@ -12,11 +12,11 @@ import static net.lingala.zip4j.util.Zip4jUtil.readFully;
 
 abstract class CipherInputStream<T extends Decrypter> extends InputStream {
 
-  private ZipEntryInputStream zipEntryInputStream;
-  private T decrypter;
+  private final ZipEntryInputStream zipEntryInputStream;
+  private final T decrypter;
   private byte[] lastReadRawDataCache;
-  private byte[] singleByteBuffer = new byte[1];
-  private LocalFileHeader localFileHeader;
+  private final byte[] singleByteBuffer = new byte[1];
+  private final LocalFileHeader localFileHeader;
 
   public CipherInputStream(ZipEntryInputStream zipEntryInputStream, LocalFileHeader localFileHeader,
                            char[] password, int bufferSize, boolean useUtf8ForPassword) throws IOException {

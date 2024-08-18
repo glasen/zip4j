@@ -6,10 +6,10 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -147,8 +147,8 @@ public class FileUtils {
       throw new ZipException("zip file name is empty or null, cannot determine zip file name");
     }
     String tmpFileName = zipFile;
-    if (zipFile.contains(System.getProperty("file.separator"))) {
-      tmpFileName = zipFile.substring(zipFile.lastIndexOf(System.getProperty("file.separator")) + 1);
+    if (zipFile.contains(FileSystems.getDefault().getSeparator())) {
+      tmpFileName = zipFile.substring(zipFile.lastIndexOf(FileSystems.getDefault().getSeparator()) + 1);
     }
 
     if (tmpFileName.endsWith(".zip")) {
@@ -229,7 +229,7 @@ public class FileUtils {
           }
         }
 
-        if (tmpFileName.startsWith(System.getProperty("file.separator"))) {
+        if (tmpFileName.startsWith(FileSystems.getDefault().getSeparator())) {
           tmpFileName = tmpFileName.substring(1);
         }
 
@@ -386,12 +386,7 @@ public class FileUtils {
    */
   public static File[] getAllSortedNumberedSplitFiles(File firstNumberedFile) {
     final String zipFileNameWithoutExtension = FileUtils.getFileNameWithoutExtension(firstNumberedFile.getName());
-    File[] allSplitFiles = firstNumberedFile.getParentFile().listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.startsWith(zipFileNameWithoutExtension + ".");
-      }
-    });
+    File[] allSplitFiles = firstNumberedFile.getParentFile().listFiles((dir, name) -> name.startsWith(zipFileNameWithoutExtension + "."));
 
     if(allSplitFiles == null) {
       return new File[0];
@@ -523,19 +518,24 @@ public class FileUtils {
 
       DosFileAttributes dosFileAttributes = dosFileAttributeView.readAttributes();
 
-      byte windowsAttribute = 0;
-
-      windowsAttribute = setBitIfApplicable(dosFileAttributes.isReadOnly(), windowsAttribute, 0);
-      windowsAttribute = setBitIfApplicable(dosFileAttributes.isHidden(), windowsAttribute, 1);
-      windowsAttribute = setBitIfApplicable(dosFileAttributes.isSystem(), windowsAttribute, 2);
-      windowsAttribute = setBitIfApplicable(dosFileAttributes.isDirectory(), windowsAttribute, 4);
-      windowsAttribute = setBitIfApplicable(dosFileAttributes.isArchive(), windowsAttribute, 5);
+      byte windowsAttribute = getWindowsAttribute(dosFileAttributes);
       fileAttributes[0] = windowsAttribute;
     } catch (IOException e) {
       // ignore
     }
 
     return fileAttributes;
+  }
+
+  private static byte getWindowsAttribute(DosFileAttributes dosFileAttributes) {
+    byte windowsAttribute = 0;
+
+    windowsAttribute = setBitIfApplicable(dosFileAttributes.isReadOnly(), windowsAttribute, 0);
+    windowsAttribute = setBitIfApplicable(dosFileAttributes.isHidden(), windowsAttribute, 1);
+    windowsAttribute = setBitIfApplicable(dosFileAttributes.isSystem(), windowsAttribute, 2);
+    windowsAttribute = setBitIfApplicable(dosFileAttributes.isDirectory(), windowsAttribute, 4);
+    windowsAttribute = setBitIfApplicable(dosFileAttributes.isArchive(), windowsAttribute, 5);
+    return windowsAttribute;
   }
 
   private static void assertFileExists(File file) throws ZipException {

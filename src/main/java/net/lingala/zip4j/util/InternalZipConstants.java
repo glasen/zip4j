@@ -18,6 +18,7 @@ package net.lingala.zip4j.util;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public final class InternalZipConstants {
 
@@ -63,7 +64,7 @@ public final class InternalZipConstants {
   public static final String ZIP_STANDARD_CHARSET_NAME = "Cp437";
 
   // StandardCharset.UTF-8 could have been used below but StandardCharset does not exist in older versions of Android
-  public static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8");
+  public static final Charset CHARSET_UTF_8 = StandardCharsets.UTF_8;
 
   public static final Charset ZIP4J_DEFAULT_CHARSET = CHARSET_UTF_8;
 

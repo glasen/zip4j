@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
@@ -584,7 +585,9 @@ public class MiscZipFileIT extends AbstractIT {
 
     List<InputStream> inputStreams = new ArrayList<>();
     for (FileHeader fileHeader : zipFile.getFileHeaders()) {
-      inputStreams.add(zipFile.getInputStream(fileHeader));
+      try (var empty = zipFile.getInputStream(fileHeader)) {
+        inputStreams.add(empty);
+      }
     }
 
     assertThat(inputStreams).hasSize(4);
@@ -631,7 +634,8 @@ public class MiscZipFileIT extends AbstractIT {
   @Test
   public void testAddFileWithCustomLastModifiedFileTimeSetsInputTime() throws IOException, ParseException {
     ZipFile zipFile = new ZipFile(generatedZipFile);
-    String string_date = "20-January-2020";
+    Locale.setDefault(Locale.ENGLISH);
+    String string_date = "20-Jan-2020";
     long expectedLastModifiedTimeInMillis = new SimpleDateFormat("dd-MMM-yyyy").parse(string_date).getTime();
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setLastModifiedFileTime(expectedLastModifiedTimeInMillis);

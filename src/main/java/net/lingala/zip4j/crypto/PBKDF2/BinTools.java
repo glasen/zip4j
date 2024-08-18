@@ -28,12 +28,12 @@ class BinTools {
     if (b == null) {
       return "";
     }
-    StringBuffer sb = new StringBuffer(2 * b.length);
-    for (int i = 0; i < b.length; i++) {
-      int v = (256 + b[i]) % 256;
-      sb.append(hex.charAt((v / 16) & 15));
-      sb.append(hex.charAt((v % 16) & 15));
-    }
+    StringBuilder sb = new StringBuilder(2 * b.length);
+      for (byte value : b) {
+          int v = (256 + value) % 256;
+          sb.append(hex.charAt((v / 16) & 15));
+          sb.append(hex.charAt((v % 16) & 15));
+      }
     return sb.toString();
   }
 
@@ -46,7 +46,7 @@ class BinTools {
       // Assume leading zero for odd string length
       m = "0" + s;
     }
-    byte r[] = new byte[m.length() / 2];
+    byte[] r = new byte[m.length() / 2];
     for (int i = 0, n = 0; i < m.length(); n++) {
       char h = m.charAt(i++);
       char l = m.charAt(i++);

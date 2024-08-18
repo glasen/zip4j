@@ -42,9 +42,8 @@ public class AESEncrypter implements Encrypter {
   private boolean finished;
 
   private int nonce = 1;
-  private int loopCount = 0;
 
-  private final byte[] iv;
+    private final byte[] iv;
   private final byte[] counterBlock;
   private byte[] derivedPasswordVerifier;
   private byte[] saltBytes;
@@ -93,8 +92,8 @@ public class AESEncrypter implements Encrypter {
     }
 
     for (int j = start; j < (start + len); j += AES_BLOCK_SIZE) {
-      loopCount = (j + AES_BLOCK_SIZE <= (start + len)) ?
-          AES_BLOCK_SIZE : ((start + len) - j);
+        int loopCount = (j + AES_BLOCK_SIZE <= (start + len)) ?
+                AES_BLOCK_SIZE : ((start + len) - j);
 
       prepareBuffAESIVBytes(iv, nonce);
       aesEngine.processBlock(iv, counterBlock);

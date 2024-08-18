@@ -108,7 +108,7 @@ public class HeaderUtil {
           + fileName);
     }
 
-    if (zipModel.getCentralDirectory().getFileHeaders().size() == 0) {
+    if (zipModel.getCentralDirectory().getFileHeaders().isEmpty()) {
       return null;
     }
 
