@@ -2,7 +2,6 @@ package net.lingala.zip4j.util;
 
 import net.lingala.zip4j.AbstractIT;
 import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.ExcludeFileFilter;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.RandomAccessFileMode;
 import net.lingala.zip4j.progress.ProgressMonitor;
@@ -31,7 +30,7 @@ public class FileUtilsIT extends AbstractIT {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private ProgressMonitor progressMonitor = new ProgressMonitor();
+  private final ProgressMonitor progressMonitor = new ProgressMonitor();
 
   @Test
   public void testCopyFileThrowsExceptionWhenStartsIsLessThanZero() throws IOException {
@@ -128,12 +127,7 @@ public class FileUtilsIT extends AbstractIT {
         getTestFileFromResources("sample_directory/favicon.ico")
     );
     ZipParameters zipParameters = new ZipParameters();
-    zipParameters.setExcludeFileFilter(new ExcludeFileFilter() {
-      @Override
-      public boolean isExcluded(File o) {
-        return filesToExclude.contains(o);
-      }
-    });
+    zipParameters.setExcludeFileFilter(filesToExclude::contains);
     List<File> allFiles = FileUtils.getFilesInDirectoryRecursive(rootFolder, zipParameters);
 
     assertThat(allFiles).hasSize(10);

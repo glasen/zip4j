@@ -5,9 +5,9 @@ import java.io.InputStream;
 
 public class ControlledReadInputStream extends InputStream {
 
-  private InputStream inputStream;
-  private int readLimit;
-  private byte[] singleByteBuffer = new byte[1];
+  private final InputStream inputStream;
+  private final int readLimit;
+  private final byte[] singleByteBuffer = new byte[1];
 
   public ControlledReadInputStream(InputStream inputStream, int maximumNumberOfBytesToReadAtOnce) {
     this.inputStream = inputStream;
@@ -22,7 +22,7 @@ public class ControlledReadInputStream extends InputStream {
       return -1;
     }
 
-    return singleByteBuffer[0];
+    return singleByteBuffer[0] & 0xFF;
   }
 
   @Override

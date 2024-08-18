@@ -54,9 +54,9 @@ public class HeaderWriterIT extends AbstractIT {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private RawIO rawIO = new RawIO();
-  private HeaderWriter headerWriter = new HeaderWriter();
-  private HeaderReader headerReader = new HeaderReader();
+  private final RawIO rawIO = new RawIO();
+  private final HeaderWriter headerWriter = new HeaderWriter();
+  private final HeaderReader headerReader = new HeaderReader();
 
   @Test
   public void testWriteLocalFileHeaderSimpleLocalFileHeaderSuccessScenario() throws IOException {
@@ -708,7 +708,7 @@ public class HeaderWriterIT extends AbstractIT {
     FileHeader firstFileHeader = zipModel.getCentralDirectory().getFileHeaders().get(0);
 
     if (firstFileHeader.getExtraDataRecords() == null) {
-      firstFileHeader.setExtraDataRecords(new ArrayList<ExtraDataRecord>());
+      firstFileHeader.setExtraDataRecords(new ArrayList<>());
     }
 
     firstFileHeader.getExtraDataRecords().add(extraDataRecord);

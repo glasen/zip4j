@@ -36,10 +36,10 @@ public class HeaderReaderIT extends AbstractIT {
   private static final String FILE_NAME_PREFIX = "FILE_NAME_ÄÜß_";
   private static final String END_OF_CENTRAL_DIR_COMMENT = "END_OF_CENTRAL_DIR_COMMENT_ÜÄÖÖÖÄ";
 
-  private FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
-  private HeaderReader headerReader = new HeaderReader();
-  private HeaderWriter headerWriter = new HeaderWriter();
-  private RawIO rawIO = new RawIO();
+  private final FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
+  private final HeaderReader headerReader = new HeaderReader();
+  private final HeaderWriter headerWriter = new HeaderWriter();
+  private final RawIO rawIO = new RawIO();
 
   @Test
   public void testReadAllHeadersWith10Entries() throws IOException {
@@ -245,11 +245,6 @@ public class HeaderReaderIT extends AbstractIT {
       assertThat(readLocalFileHeader.getCompressedSize()).isEqualTo(entrySize);
       assertThat(readLocalFileHeader.getUncompressedSize()).isEqualTo(entrySize);
     }
-  }
-
-  @Test
-  public void testReadDataDescriptorWithSignature() {
-
   }
 
   private void testWithoutUtf8FileName(String fileName, String entryComment, boolean shouldFileNamesMatch,

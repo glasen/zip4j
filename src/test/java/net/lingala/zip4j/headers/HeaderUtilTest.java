@@ -74,7 +74,7 @@ public class HeaderUtilTest {
   public void testGetFileHeaderWithEmptyFileHeadersReturnsNull() throws ZipException {
     ZipModel zipModel = new ZipModel();
     CentralDirectory centralDirectory = new CentralDirectory();
-    centralDirectory.setFileHeaders(Collections.<FileHeader>emptyList());
+    centralDirectory.setFileHeaders(Collections.emptyList());
     zipModel.setCentralDirectory(centralDirectory);
 
     FileHeader fileHeader = HeaderUtil.getFileHeader(zipModel, FILE_NAME);
@@ -274,13 +274,6 @@ public class HeaderUtilTest {
     zipModel.setEndOfCentralDirectoryRecord(endOfCentralDirectoryRecord);
 
     assertThat(HeaderUtil.getOffsetStartOfCentralDirectory(zipModel)).isEqualTo(offsetStartOfCentralDirectory);
-  }
-
-  private List<FileHeader> generateFileHeaderWithFileNamesWithEmptyAndNullFileNames(String fileNamePrefix, int numberOfEntriesToAdd) {
-    List<FileHeader> fileHeaders = generateFileHeaderWithFileNames(fileNamePrefix, numberOfEntriesToAdd);
-    fileHeaders.add(generateFileHeader(""));
-    fileHeaders.add(generateFileHeader(null));
-    return fileHeaders;
   }
 
   private List<FileHeader> generateFileHeaderWithFileNames(String fileNamePrefix, int numberOfEntriesToAdd) {

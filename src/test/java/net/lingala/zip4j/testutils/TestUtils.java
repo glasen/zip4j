@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
@@ -49,7 +48,7 @@ public class TestUtils {
 
     int splitCounter = 0;
     byte[] buff = new byte[InternalZipConstants.BUFF_SIZE];
-    int readLen = 0;
+    int readLen;
     long numberOfBytesWrittenInThisPart = 0;
 
     try (InputStream inputStream = new FileInputStream(fileToSplit)) {
@@ -113,7 +112,7 @@ public class TestUtils {
   public static void createZipFileWithZipOutputStream(File zipFile, List<File> filesToAdd) throws IOException {
 
     byte[] buff = new byte[InternalZipConstants.BUFF_SIZE];
-    int readLen = -1;
+    int readLen;
     ZipParameters zipParameters = new ZipParameters();
 
     try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile))) {
@@ -180,16 +179,12 @@ public class TestUtils {
   }
 
   private static File getFileFromResources(String parentFolder, String fileName) {
-    try {
       String path = "/" + parentFolder + "/" + fileName;
       URL fileUrl = TestUtils.class.getResource(path);
       if (fileUrl == null) {
         throw new RuntimeException("File not found " + path);
       }
-      String utfDecodedFilePath = URLDecoder.decode(fileUrl.getFile(), InternalZipConstants.CHARSET_UTF_8.toString());
+      String utfDecodedFilePath = URLDecoder.decode(fileUrl.getFile(), InternalZipConstants.CHARSET_UTF_8);
       return new File(utfDecodedFilePath);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

@@ -4,7 +4,6 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.io.inputstream.ZipInputStream;
 import net.lingala.zip4j.model.AESExtraDataRecord;
 import net.lingala.zip4j.model.AbstractFileHeader;
-import net.lingala.zip4j.model.ExcludeFileFilter;
 import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.LocalFileHeader;
 import net.lingala.zip4j.model.ZipParameters;
@@ -35,6 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class AddFilesToZipIT extends AbstractIT {
 
-  private RawIO rawIO = new RawIO();
+  private final RawIO rawIO = new RawIO();
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -706,12 +706,7 @@ public class AddFilesToZipIT extends AbstractIT {
     );
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setIncludeRootFolder(false);
-    zipParameters.setExcludeFileFilter(new ExcludeFileFilter() {
-      @Override
-      public boolean isExcluded(File o) {
-        return filesToExclude.contains(o);
-      }
-    });
+    zipParameters.setExcludeFileFilter(filesToExclude::contains);
 
     zipFile.addFolder(TestUtils.getTestFileFromResources(""), zipParameters);
 
@@ -955,8 +950,9 @@ public class AddFilesToZipIT extends AbstractIT {
       throw new RuntimeException("Cannot create an empty file to test");
     }
     File fileToAdd = TestUtils.getTestFileFromResources("sample.pdf");
-    try (ZipFile zipFile = new ZipFile(generatedZipFile);
-          InputStream inputStream = Files.newInputStream(fileToAdd.toPath())) {
+    ZipFile zipFile = new ZipFile(generatedZipFile);
+
+    try (InputStream inputStream = Files.newInputStream(fileToAdd.toPath())) {
       ZipParameters zipParameters = new ZipParameters();
       zipParameters.setFileNameInZip(fileToAdd.getName());
       zipFile.addStream(inputStream, zipParameters);
@@ -1415,12 +1411,7 @@ public class AddFilesToZipIT extends AbstractIT {
         CompressionMethod shouldBeCompressionMethod = getShouldBeCompressionMethod(
             encryptionMethod == EncryptionMethod.AES, compressionMethod, fileHeader.getUncompressedSize());
         assertThat(fileHeader.getCompressionMethod()).isEqualTo(shouldBeCompressionMethod);
-
-        if (encryptionMethod == null) {
-          assertThat(fileHeader.getEncryptionMethod()).isEqualTo(EncryptionMethod.NONE);
-        } else {
-          assertThat(fileHeader.getEncryptionMethod()).isEqualTo(encryptionMethod);
-        }
+        assertThat(fileHeader.getEncryptionMethod()).isEqualTo(Objects.requireNonNullElse(encryptionMethod, EncryptionMethod.NONE));
 
         if (encryptionMethod == EncryptionMethod.AES) {
           verifyAesExtraDataRecord(fileHeader.getAesExtraDataRecord(), aesKeyStrength, aesVersion);

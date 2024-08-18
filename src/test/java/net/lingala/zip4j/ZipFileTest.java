@@ -62,7 +62,7 @@ public class ZipFileTest {
     expectedException.expectMessage("zip file: " + sourceZipFile + " already exists. " +
         "To add files to existing zip file use addFile method");
 
-    zipFile.createSplitZipFile(Collections.<File>emptyList(), new ZipParameters(), true, 10000);
+    zipFile.createSplitZipFile(Collections.emptyList(), new ZipParameters(), true, 10000);
   }
 
   @Test
@@ -78,7 +78,7 @@ public class ZipFileTest {
     expectedException.expect(ZipException.class);
     expectedException.expectMessage("input file List is null, cannot create zip file");
 
-    zipFile.createSplitZipFile(Collections.<File>emptyList(), new ZipParameters(), true, 10000);
+    zipFile.createSplitZipFile(Collections.emptyList(), new ZipParameters(), true, 10000);
   }
 
   @Test
@@ -187,7 +187,7 @@ public class ZipFileTest {
     expectedException.expect(ZipException.class);
     expectedException.expectMessage("input file List is null or empty");
 
-    zipFile.addFiles(Collections.<File>emptyList());
+    zipFile.addFiles(Collections.emptyList());
   }
 
   @Test
@@ -214,7 +214,7 @@ public class ZipFileTest {
     expectedException.expect(ZipException.class);
     expectedException.expectMessage("input file List is null or empty");
 
-    zipFile.addFiles(Collections.<File>emptyList(), new ZipParameters());
+    zipFile.addFiles(Collections.emptyList(), new ZipParameters());
   }
 
   @Test

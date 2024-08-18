@@ -287,17 +287,15 @@ public class CreateZipFileIT extends AbstractIT {
 
   @Test
   public void testCreateZipFileFromStreamThrowsExceptionIfZipFileExists() throws IOException {
-    try (ZipFile zipFile = new ZipFile(generatedZipFile)) {
+    ZipFile zipFile = new ZipFile(generatedZipFile);
       zipFile.addFile(TestUtils.getTestFileFromResources("sample.pdf"));
-    }
 
     expectedException.expect(ZipException.class);
     expectedException.expectMessage("zip file: " + generatedZipFile
             + " already exists. To add files to existing zip file use addFile method");
 
-    try (ZipFile zipFile = new ZipFile(generatedZipFile)) {
+    zipFile = new ZipFile(generatedZipFile);
       zipFile.createSplitZipFile((InputStream) null, new ZipParameters(), true, 512000);
-    }
   }
 
   @Test
@@ -305,9 +303,9 @@ public class CreateZipFileIT extends AbstractIT {
     Path fileToAdd = TestUtils.getTestFileFromResources("file_PDF_1MB.pdf").toPath();
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setFileNameInZip(fileToAdd.getFileName().toString());
+    ZipFile zipFile = new ZipFile(generatedZipFile);
 
-    try (ZipFile zipFile = new ZipFile(generatedZipFile);
-         InputStream inputStream = Files.newInputStream(fileToAdd)) {
+    try (InputStream inputStream = Files.newInputStream(fileToAdd)) {
       zipFile.createSplitZipFile(inputStream, zipParameters, true, 512000);
     }
 
@@ -321,8 +319,9 @@ public class CreateZipFileIT extends AbstractIT {
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setFileNameInZip(fileToAdd.getFileName().toString());
 
-    try (ZipFile zipFile = new ZipFile(generatedZipFile);
-         InputStream inputStream = Files.newInputStream(fileToAdd)) {
+    ZipFile zipFile = new ZipFile(generatedZipFile);
+
+    try (InputStream inputStream = Files.newInputStream(fileToAdd)) {
       zipFile.createSplitZipFile(inputStream, zipParameters, false, 512000);
     }
 
@@ -336,8 +335,9 @@ public class CreateZipFileIT extends AbstractIT {
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setFileNameInZip(fileToAdd.getFileName().toString());
 
-    try (ZipFile zipFile = new ZipFile(generatedZipFile);
-         InputStream inputStream = Files.newInputStream(fileToAdd)) {
+    ZipFile zipFile = new ZipFile(generatedZipFile);
+
+    try (InputStream inputStream = Files.newInputStream(fileToAdd)) {
       zipFile.createSplitZipFile(inputStream, zipParameters, true, 512000);
     }
 
@@ -399,20 +399,14 @@ public class CreateZipFileIT extends AbstractIT {
   }
 
   private File[] getAllSplitZipFilesInFolder(File folder, final String fileNameWithoutExtension) {
-    FilenameFilter filenameFilter = new FilenameFilter() {
-      @Override
-      public boolean accept(File dir, String name) {
-        return name.contains(fileNameWithoutExtension + ".");
-      }
-    };
+    FilenameFilter filenameFilter = (dir, name) -> name.contains(fileNameWithoutExtension + ".");
     return folder.listFiles(filenameFilter);
   }
 
-  private ZipFile createZipFileWithCompressionLevel(CompressionLevel compressionLevel) throws ZipException {
+  private void createZipFileWithCompressionLevel(CompressionLevel compressionLevel) throws ZipException {
     ZipFile zipFile = new ZipFile(generatedZipFile);
     ZipParameters zipParameters = new ZipParameters();
     zipParameters.setCompressionLevel(compressionLevel);
     zipFile.addFiles(FILES_TO_ADD, zipParameters);
-    return zipFile;
   }
 }

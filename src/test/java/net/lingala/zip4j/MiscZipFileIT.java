@@ -24,10 +24,8 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ThreadFactory;
 
 import static java.util.Collections.singletonList;
 import static net.lingala.zip4j.testutils.TestUtils.getFileNamesOfFiles;
@@ -489,14 +487,12 @@ public class MiscZipFileIT extends AbstractIT {
 
     final String threadName = "CustomThreadFactoryTest";
     ZipFile zipFile = new ZipFile(generatedZipFile);
-    zipFile.setThreadFactory(new ThreadFactory() {
-      @Override
-      public Thread newThread(Runnable r) {
-        Thread t = new Thread(threadName);
-        t.setDaemon(false);
-        return t;
-      }
+    zipFile.setThreadFactory(r -> {
+      Thread t = new Thread(threadName);
+      t.setDaemon(false);
+      return t;
     });
+
     zipFile.setRunInThread(true);
 
     ZipParameters zipParameters = new ZipParameters();
@@ -544,7 +540,7 @@ public class MiscZipFileIT extends AbstractIT {
   }
 
   @Test
-  public void testVerifyZipFileForNonZipFileReturnsFalse() throws IOException {
+  public void testVerifyZipFileForNonZipFileReturnsFalse() {
     ZipFile zipFile = new ZipFile(TestUtils.getTestFileFromResources("sample.pdf"));
     assertThat(zipFile.isValidZipFile()).isFalse();
   }
@@ -590,7 +586,6 @@ public class MiscZipFileIT extends AbstractIT {
     for (FileHeader fileHeader : zipFile.getFileHeaders()) {
       inputStreams.add(zipFile.getInputStream(fileHeader));
     }
-    zipFile.close();
 
     assertThat(inputStreams).hasSize(4);
     assertInputStreamsAreClosed(inputStreams);
@@ -602,37 +597,15 @@ public class MiscZipFileIT extends AbstractIT {
     zipFile.addFiles(FILES_TO_ADD);
     List<InputStream> inputStreams = new ArrayList<>();
 
-    try(ZipFile closeableZipFile = new ZipFile(generatedZipFile)) {
-      for (FileHeader fileHeader : closeableZipFile.getFileHeaders()) {
-        inputStreams.add(closeableZipFile.getInputStream(fileHeader));
+    ZipFile closeableZipFile = new ZipFile(generatedZipFile);
+    for (FileHeader fileHeader : closeableZipFile.getFileHeaders()) {
+      try (InputStream inputStream = closeableZipFile.getInputStream(fileHeader)) {
+        inputStreams.add(inputStream);
       }
     }
 
     assertThat(inputStreams).hasSize(3);
     assertInputStreamsAreClosed(inputStreams);
-  }
-
-  @Test
-  public void testCloseZipFileMultipleTimesClosesAllStreams() throws IOException {
-    ZipFile zipFile = new ZipFile(generatedZipFile);
-    zipFile.addFiles(FILES_TO_ADD);
-    List<InputStream> inputStreams = new ArrayList<>();
-
-    // First open the inputstreams
-    for (FileHeader fileHeader : zipFile.getFileHeaders()) {
-      inputStreams.add(zipFile.getInputStream(fileHeader));
-    }
-    // Close it for the first time
-    zipFile.close();
-    assertInputStreamsAreClosed(inputStreams);
-
-    //Now open an inputstream again
-    InputStream inputStream = zipFile.getInputStream(zipFile.getFileHeader(FILES_TO_ADD.get(0).getName()));
-
-    // Closing it now again should close the inputstream as well
-    zipFile.close();
-
-    assertInputStreamsAreClosed(Collections.singletonList(inputStream));
   }
 
   @Test
@@ -736,7 +709,7 @@ public class MiscZipFileIT extends AbstractIT {
     File outputFile = temporaryFolder.newFile();
     try (OutputStream outputStream = new FileOutputStream(outputFile)) {
       byte[] b = new byte[InternalZipConstants.BUFF_SIZE];
-      int readLen = -1;
+      int readLen;
 
       while ((readLen = inputStream.read(b)) != -1) {
         outputStream.write(b, 0, readLen);

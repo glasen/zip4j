@@ -14,7 +14,7 @@ public class ZipVersionUtilsTest {
 
   private static final String ACTUAL_OS = System.getProperty("os.name");
 
-  private RawIO rawIO = new RawIO();
+  private final RawIO rawIO = new RawIO();
 
   @Before
   public void setup() {

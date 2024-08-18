@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HeaderVerifier {
 
-  private static HeaderReader headerReader = new HeaderReader();
+  private static final HeaderReader headerReader = new HeaderReader();
 
   public static void verifyLocalFileHeaderUncompressedSize(File generatedZipFile, String fileNameInZipToVerify,
                                                     long expectedUncompressedSize) throws IOException {

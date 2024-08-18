@@ -425,19 +425,18 @@ public class ZipOutputStreamIT extends AbstractIT {
 
     List<File> filesToAdd = FILES_TO_ADD;
     try(ZipOutputStream zos = initializeZipOutputStream(false, charset)) {
-      for (int i = 0; i < filesToAdd.size(); i++) {
-        File fileToAdd = filesToAdd.get(i);
-        zipParameters.setFileNameInZip(fileToAdd.getName());
+        for (File fileToAdd : filesToAdd) {
+            zipParameters.setFileNameInZip(fileToAdd.getName());
 
-        zos.putNextEntry(zipParameters);
+            zos.putNextEntry(zipParameters);
 
-        try(InputStream inputStream = new FileInputStream(fileToAdd)) {
-          while ((readLen = inputStream.read(buff)) != -1) {
-            zos.write(buff, 0, readLen);
-          }
+            try (InputStream inputStream = new FileInputStream(fileToAdd)) {
+                while ((readLen = inputStream.read(buff)) != -1) {
+                    zos.write(buff, 0, readLen);
+                }
+            }
+            zos.closeEntry();
         }
-        zos.closeEntry();
-      }
       zos.setComment(comment);
     }
     verifyZipFileByExtractingAllFiles(generatedZipFile, PASSWORD, outputFolder, filesToAdd.size(), true, charset);

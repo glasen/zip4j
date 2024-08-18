@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RawIOIT extends AbstractIT {
 
   private File fileToTest;
-  private RawIO rawIO = new RawIO();
+  private final RawIO rawIO = new RawIO();
 
   @Before
   public void before() throws IOException {

@@ -31,8 +31,8 @@ public class FileHeaderFactoryTest {
   private static final String FILE_NAME_IN_ZIP = "filename.txt";
   private static final long ENTRY_CRC = 2323L;
 
-  private FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
-  private RawIO rawIO = new RawIO();
+  private final FileHeaderFactory fileHeaderFactory = new FileHeaderFactory();
+  private final RawIO rawIO = new RawIO();
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

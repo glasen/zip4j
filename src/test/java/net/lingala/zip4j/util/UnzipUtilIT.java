@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 public class UnzipUtilIT extends AbstractIT {
 
   @Test
-  public void testCreateZipInputStream() throws ZipException, IOException {
+  public void testCreateZipInputStream() throws IOException {
     ZipFile zipFile = createZipFile();
     ZipModel zipModel = createZipModel();
     FileHeader fileHeader = zipFile.getFileHeaders().get(1);
@@ -43,7 +43,7 @@ public class UnzipUtilIT extends AbstractIT {
     try (InputStream inputStream = UnzipUtil.createZipInputStream(zipModel, fileHeader, "password".toCharArray());
          OutputStream outputStream = new FileOutputStream(extractedFile)) {
       byte[] b = new byte[InternalZipConstants.BUFF_SIZE];
-      int readLen = 0;
+      int readLen;
 
       while ((readLen = inputStream.read(b)) != -1) {
         outputStream.write(b, 0, readLen);

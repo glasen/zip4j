@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(SlowTest.class)
 public class ZipFileZip64IT extends AbstractIT {
 
-  private byte[] readBuffer = new byte[2 * InternalZipConstants.BUFF_SIZE];
+  private final byte[] readBuffer = new byte[2 * InternalZipConstants.BUFF_SIZE];
 
   @Test
   public void testZip64WithSingleLargeZipEntry() throws IOException {

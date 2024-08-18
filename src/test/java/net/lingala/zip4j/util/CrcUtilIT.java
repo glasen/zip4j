@@ -23,7 +23,7 @@ public class CrcUtilIT extends AbstractIT {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
-  private ProgressMonitor progressMonitor = new ProgressMonitor();
+  private final ProgressMonitor progressMonitor = new ProgressMonitor();
 
   @Test
   public void testComputeFileCrcThrowsExceptionWhenFileIsNull() throws IOException {
@@ -70,7 +70,7 @@ public class CrcUtilIT extends AbstractIT {
   private long calculateFileCrc(File file) throws IOException {
     try(InputStream inputStream = new FileInputStream(file)) {
       byte[] buffer = new byte[InternalZipConstants.BUFF_SIZE];
-      int readLen = -1;
+      int readLen;
       CRC32 crc32 = new CRC32();
       while((readLen = inputStream.read(buffer)) != -1) {
         crc32.update(buffer, 0, readLen);
