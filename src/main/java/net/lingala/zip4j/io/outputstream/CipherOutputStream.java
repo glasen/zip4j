@@ -58,7 +58,7 @@ abstract class CipherOutputStream<T extends Encrypter> extends OutputStream {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     zipEntryOutputStream.close();
   }
 

@@ -32,7 +32,7 @@ public class StandardDecrypter implements Decrypter {
     init(headerBytes, password, lastModifiedFileTime, crc, useUtf8ForPassword);
   }
 
-  public int decryptData(byte[] buff, int start, int len) throws ZipException {
+  public void decryptData(byte[] buff, int start, int len) throws ZipException {
     if (start < 0 || len < 0) {
       throw new ZipException("one of the input parameters were null in standard decrypt data");
     }
@@ -44,7 +44,6 @@ public class StandardDecrypter implements Decrypter {
       buff[i] = (byte) val;
     }
 
-    return len;
   }
 
   private void init(byte[] headerBytes, char[] password, long lastModifiedFileTime, long crc,

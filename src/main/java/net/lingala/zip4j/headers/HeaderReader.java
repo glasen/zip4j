@@ -566,17 +566,13 @@ public class HeaderReader {
     readAesExtraDataRecord(localFileHeader, rawIO);
 
     if (localFileHeader.isEncrypted()) {
-
-      if (localFileHeader.getEncryptionMethod() == EncryptionMethod.AES) {
-        //Do nothing
-      } else {
-        if (isBitSet(localFileHeader.getGeneralPurposeFlag()[0], 6)) {
-          localFileHeader.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG);
-        } else {
-          localFileHeader.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
+        if (localFileHeader.getEncryptionMethod() != EncryptionMethod.AES) {
+          if (isBitSet(localFileHeader.getGeneralPurposeFlag()[0], 6)) {
+            localFileHeader.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD_VARIANT_STRONG);
+          } else {
+            localFileHeader.setEncryptionMethod(EncryptionMethod.ZIP_STANDARD);
+          }
         }
-      }
-
     }
 
     return localFileHeader;

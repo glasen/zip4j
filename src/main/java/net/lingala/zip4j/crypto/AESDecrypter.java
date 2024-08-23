@@ -66,7 +66,7 @@ public class AESDecrypter implements Decrypter {
   }
 
   @Override
-  public int decryptData(byte[] buff, int start, int len) throws ZipException {
+  public void decryptData(byte[] buff, int start, int len) throws ZipException {
 
     for (int j = start; j < (start + len); j += AES_BLOCK_SIZE) {
       int loopCount = (j + AES_BLOCK_SIZE <= (start + len)) ?
@@ -83,7 +83,6 @@ public class AESDecrypter implements Decrypter {
       nonce++;
     }
 
-    return len;
   }
 
   public byte[] getCalculatedAuthenticationBytes(int numberOfBytesPushedBack) {

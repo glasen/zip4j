@@ -71,7 +71,7 @@ public class ExtractAllFilesTask extends AbstractExtractFileTask<ExtractAllFiles
       return null;
     }
 
-    return zipModel.getCentralDirectory().getFileHeaders().get(0);
+    return zipModel.getCentralDirectory().getFileHeaders().getFirst();
   }
 
   public static class ExtractAllFilesTaskParameters extends AbstractZipTaskParameters {

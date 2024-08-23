@@ -21,7 +21,7 @@ package net.lingala.zip4j.crypto.PBKDF2;
  * see http://rtner.de/software/PBKDF2.html
  */
 
-interface PRF {
+public interface PRF {
 
   void init(byte[] P);
 

@@ -18,8 +18,6 @@ package net.lingala.zip4j.crypto.engine;
 
 import net.lingala.zip4j.exception.ZipException;
 
-import static net.lingala.zip4j.util.InternalZipConstants.AES_BLOCK_SIZE;
-
 /**
  * Core Engine for AES Encryption
  *
@@ -73,11 +71,11 @@ public class AESEngine {
     return W;
   }
 
-  public int processBlock(byte[] in, byte[] out) throws ZipException {
-    return processBlock(in, 0, out, 0);
+  public void processBlock(byte[] in, byte[] out) throws ZipException {
+    processBlock(in, 0, out, 0);
   }
 
-  public int processBlock(byte[] in, int inOff, byte[] out, int outOff) throws ZipException {
+  public void processBlock(byte[] in, int inOff, byte[] out, int outOff) throws ZipException {
     if (workingKey == null) {
       throw new ZipException("AES engine not initialised");
     }
@@ -93,8 +91,6 @@ public class AESEngine {
     stateIn(in, inOff);
     encryptBlock(workingKey);
     stateOut(out, outOff);
-
-    return AES_BLOCK_SIZE;
   }
 
   private void stateIn(byte[] bytes, int off) {

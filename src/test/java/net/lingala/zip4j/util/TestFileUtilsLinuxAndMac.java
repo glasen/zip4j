@@ -19,12 +19,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class FileUtilsTestLinuxAndMac {
+public class TestFileUtilsLinuxAndMac {
 
   private static final String ACTUAL_OS = System.getProperty("os.name");
 
@@ -55,7 +52,7 @@ public class FileUtilsTestLinuxAndMac {
 
     FileUtils.setFileAttributes(path, new byte[4]);
 
-    verifyZeroInteractions(posixFileAttributeView);
+    verifyNoInteractions(posixFileAttributeView);
   }
 
   @Test

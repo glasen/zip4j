@@ -679,7 +679,7 @@ public class HeaderWriter {
     if (zipModel.getCentralDirectory() != null &&
         zipModel.getCentralDirectory().getFileHeaders() != null &&
             !zipModel.getCentralDirectory().getFileHeaders().isEmpty()) {
-      FileHeader firstFileHeader = zipModel.getCentralDirectory().getFileHeaders().get(0);
+      FileHeader firstFileHeader = zipModel.getCentralDirectory().getFileHeaders().getFirst();
       zip64EndOfCentralDirectoryRecord.setVersionMadeBy(firstFileHeader.getVersionMadeBy());
       zip64EndOfCentralDirectoryRecord.setVersionNeededToExtract(firstFileHeader.getVersionNeededToExtract());
     }
